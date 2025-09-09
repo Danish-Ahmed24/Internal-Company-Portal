@@ -6,5 +6,7 @@ staff
 
 {% block body %}
 staff dasboard
+	{% if user.is_authenticated %}
 		<a href="{% url "logout" %}"><button>logout</button></a>
+		{% endif %}
 {% endblock body %}

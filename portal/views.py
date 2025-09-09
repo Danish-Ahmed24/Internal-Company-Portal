@@ -6,13 +6,25 @@ from django.contrib.auth.decorators import login_required
 
 @login_required 
 def index(request):
-    context = {}
+
+    user = request.user
+    context = {"user":user}
     # check staff or employee
     if (request.user.is_staff):
+        # staff
+
         return render(request, "portal/dashboards/staff.html", context)
-    return render(request, "portal/dashboards/employee.html", context)
+    else:
+        # employee
+        context = {
+            "user":user,
+            "tasks":user.tasks.all(),
+                   }
+        # print(user.tasks.all())
+        return render(request, "portal/dashboards/employee.html", context)
 
 def login(request):
+
     context = {}
     if request.method == "POST":
         employee_id = request.POST.get("employee_id")
@@ -31,5 +43,6 @@ def login(request):
 
 @login_required
 def logout(request):
+
     auth_logout(request)
     return redirect("index")

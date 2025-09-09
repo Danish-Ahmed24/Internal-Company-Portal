@@ -5,6 +5,37 @@ employee
 {% endblock title %}
 
 {% block body %}
-employee dashboard
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col">Project</th>
+      <th scope="col">Desc</th>
+      <th scope="col">DeadLine</th>
+      <th scope="col">Complete</th>
+    </tr>
+  </thead>
+  <tbody>
+
+	  {% for task in tasks %}
+    <tr>
+      <th scope="row">{{task.id}}</th>
+      <td>{{task.title}}</td>
+      <td>{{task.project}}</td>
+      <td>{{task.description}}</td>
+      <td>{{task.deadline}}</td>
+      <td>{% if task.is_complete %}✅{% else %}❌{% endif %}</td>
+    </tr>
+	{% endfor %}
+    
+  </tbody>
+</table>
+
+			
+
+		{% if user.is_authenticated %}
 		<a href="{% url "logout" %}"><button>logout</button></a>
+		{% endif %}
 {% endblock body %}
