@@ -1,0 +1,35 @@
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
+
+@login_required 
+def index(request):
+    context = {}
+    # check staff or employee
+    if (request.user.is_staff):
+        return render(request, "portal/dashboards/staff.html", context)
+    return render(request, "portal/dashboards/employee.html", context)
+
+def login(request):
+    context = {}
+    if request.method == "POST":
+        employee_id = request.POST.get("employee_id")
+        password = request.POST.get("password")
+
+        # Authenticate user
+        user = authenticate(request, employee_id=employee_id, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect("index")  # go to home page after login
+        else:
+            context["error"] = "Invalid Employee ID or password"
+
+    # GET request or failed login
+    return render(request, "portal/auth/login.html", context)
+
+@login_required
+def logout(request):
+    auth_logout(request)
+    return redirect("index")
