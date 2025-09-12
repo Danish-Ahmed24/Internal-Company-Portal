@@ -16,10 +16,8 @@ def index(request):
         return render(request, "portal/dashboards/staff.html", context)
     else:
         # employee
-        context = {
-            "user":user,
-            "tasks":user.tasks.all(),
-                   }
+        context.update({"tasks":user.tasks.all()})
+        
         # print(user.tasks.all())
         return render(request, "portal/dashboards/employee.html", context)
 
