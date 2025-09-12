@@ -15,7 +15,7 @@ def index(request):
     if (request.user.is_staff):
         # staff
 
-        return render(request, "portal/dashboards/staff.html", context)
+        return redirect("/admin/")
     else:
         # employee
         context.update({"tasks":user.tasks.all()})
