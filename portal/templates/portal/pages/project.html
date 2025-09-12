@@ -1,0 +1,16 @@
+{% extends "portal/base.html" %}
+
+{% block title %}
+{{project.title }}
+{% endblock title %}
+
+{% block body %}
+<h2>{{ project.title }}</h2>
+<p><strong>Description:</strong> {{ project.description }}</p>
+<p><strong>Deadline:</strong> {{ project.deadline }}</p>
+<p><strong>Created by:</strong> {{ project.created_by.username }}</p>
+<p><strong>Created at:</strong> {{ project.created_at }}</p>
+
+{% include "portal/_taskstable.html"%}
+<a href="{% url 'index' %}">Back to tasks</a>
+{% endblock body %}

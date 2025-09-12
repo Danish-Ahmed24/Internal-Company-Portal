@@ -1,0 +1,29 @@
+<!--pass me list name 'tasks'-->
+
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Title</th>
+			<th scope="col">Project</th>
+			<th scope="col">Desc</th>
+			<th scope="col">DeadLine</th>
+			<th scope="col">Complete</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for task in tasks %}
+
+		<tr>
+			<th scope="row">{{task.id}}</th>
+
+			<td><a href="{% url 'task' task.id %}">{{task.title}}</a></td>
+			<td><a href="{% url 'project' task.project.id %}">{{task.project}}</a></td>
+			<td>{{task.description}}</td>
+			<td>{{task.deadline}}</td>
+			<td>{% if task.is_complete %}✅{% else %}❌{% endif %}</td>
+		</tr>
+
+		{% endfor %}
+	</tbody>
+</table>

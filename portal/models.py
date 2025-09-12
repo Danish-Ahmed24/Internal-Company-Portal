@@ -28,7 +28,7 @@ class Project(models.Model):
 class Task(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField()
-    project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="projects")
+    project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="tasks")
     assigned_to = models.ForeignKey("Employee", on_delete=models.CASCADE,related_name="tasks")
     deadline = models.DateTimeField()
     is_complete = models.BooleanField(default=False)  # default added False

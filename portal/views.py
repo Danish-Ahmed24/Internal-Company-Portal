@@ -1,8 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
+
+from portal.models import Project, Task
 
 @login_required 
 def index(request):
@@ -44,3 +46,18 @@ def logout(request):
 
     auth_logout(request)
     return redirect("index")
+
+@login_required
+def task(request,id):
+    task = get_object_or_404(Task,id=id)
+    return render(request,"portal/pages/task.html",{
+        "task":task
+    })
+
+@login_required
+def project(request,id):
+    project = get_object_or_404(Project,id=id)
+    return render(request,"portal/pages/project.html",{
+        "project":project,
+        "tasks":project.tasks.all()
+                                                       })

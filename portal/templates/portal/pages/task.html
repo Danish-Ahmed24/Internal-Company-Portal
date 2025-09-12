@@ -1,0 +1,15 @@
+{% extends "portal/base.html" %}
+
+{% block title %}
+Task {{ task.id }}
+{% endblock title %}
+
+{% block body %}
+<h2>{{ task.title }}</h2>
+<p><strong>Project:</strong> {{ task.project }}</p>
+<p><strong>Description:</strong> {{ task.description }}</p>
+<p><strong>Deadline:</strong> {{ task.deadline }}</p>
+<p><strong>Status:</strong> {% if task.is_complete %} ✅ Complete {% else %} ❌ Incomplete {% endif %}</p>
+
+<a href="{% url 'index' %}">Back to tasks</a>
+{% endblock body %}
