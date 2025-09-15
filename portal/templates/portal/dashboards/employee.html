@@ -1,16 +1,137 @@
 {% extends "portal/base.html" %}
 
 {% block title %}
-employee
+Employee Dashboard - Employee Portal
 {% endblock title %}
 
 {% block body %}
-// normal tasks
-{% include "portal/_taskstable.html"%}
 
+<!-- Welcome Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 bg-primary text-white">
+            <div class="card-body">
+                <h4 class="card-title mb-1">
+                    <i class="fas fa-tachometer-alt me-2"></i>Welcome back, {{ user.get_full_name|default:user.username }}!
+                </h4>
+                <p class="card-text mb-0">Manage your tasks and track your progress</p>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Filter and Sort Controls -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-filter me-2"></i>Filter & Sort Tasks
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <!-- Project Filter -->
+            <div class="col-md-4">
+                <label for="project" class="form-label fw-semibold">
+                    <i class="fas fa-project-diagram me-1"></i>Filter by Project:
+                </label>
+                <select name="project" id="project" class="form-select">
+                    <option value="">All Projects</option>
+                    {% for project in user_projects %}
+                        <option value="{{ project.id }}" {% if current_project == project.id|stringformat:"s" %}selected{% endif %}>
+                            {{ project.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="col-md-3">
+                <label for="sort" class="form-label fw-semibold">
+                    <i class="fas fa-sort me-1"></i>Sort by:
+                </label>
+                <select name="sort" id="sort" class="form-select">
+                    <option value="deadline" {% if current_sort == "deadline" %}selected{% endif %}>Deadline</option>
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <label for="order" class="form-label fw-semibold">Order:</label>
+                <select name="order" id="order" class="form-select">
+                    <option value="asc" {% if current_order == "asc" %}selected{% endif %}>
+                        <i class="fas fa-sort-amount-down"></i> Ascending
+                    </option>
+                    <option value="desc" {% if current_order == "desc" %}selected{% endif %}>
+                        <i class="fas fa-sort-amount-up"></i> Descending
+                    </option>
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary d-block w-100">
+                    <i class="fas fa-search me-1"></i>Apply
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-		{% if user.is_authenticated %}
-		<a href="{% url "logout" %}"><button>logout</button></a>
-		{% endif %}
+<!-- Tasks Table Card -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-tasks me-2"></i>Your Tasks
+        </h5>
+        {% if tasks %}
+        <span class="badge bg-primary">
+            {{ tasks.paginator.count }} total task{{ tasks.paginator.count|pluralize }}
+        </span>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        {% include "portal/_taskstable.html"%}
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if tasks.has_other_pages %}
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Tasks pagination">
+        <ul class="pagination">
+            {% if tasks.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if current_project %}&project={{ current_project }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}{% if current_order %}&order={{ current_order }}{% endif %}">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tasks.previous_page_number }}{% if current_project %}&project={{ current_project }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}{% if current_order %}&order={{ current_order }}{% endif %}">
+                        <i class="fas fa-angle-left"></i> Previous
+                    </a>
+                </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}
+                </span>
+            </li>
+            
+            {% if tasks.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tasks.next_page_number }}{% if current_project %}&project={{ current_project }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}{% if current_order %}&order={{ current_order }}{% endif %}">
+                        Next <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tasks.paginator.num_pages }}{% if current_project %}&project={{ current_project }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}{% if current_order %}&order={{ current_order }}{% endif %}">
+                        Last <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+
 {% endblock body %}
