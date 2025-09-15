@@ -1,0 +1,112 @@
+<!--pass me list name 'tasks'-->
+
+<div class="table-responsive">
+	<table class="table table-hover mb-0">
+		<thead class="table-light">
+			<tr>
+				<th scope="col" class="fw-semibold">#</th>
+				<th scope="col" class="fw-semibold">
+					<i class="fas fa-file-alt me-1"></i>Title
+				</th>
+				<th scope="col" class="fw-semibold">
+					<i class="fas fa-project-diagram me-1"></i>Project
+				</th>
+				<th scope="col" class="fw-semibold">
+					<i class="fas fa-align-left me-1"></i>Description
+				</th>
+				<th scope="col" class="fw-semibold">
+					<i class="fas fa-calendar-alt me-1"></i>Deadline
+					<!-- Sort indicators -->
+					{% if current_sort == "deadline" %}
+						{% if current_order == "asc" %}
+							<i class="fas fa-sort-up text-primary ms-1"></i>
+						{% else %}
+							<i class="fas fa-sort-down text-primary ms-1"></i>
+						{% endif %}
+					{% endif %}
+				</th>
+				<th scope="col" class="fw-semibold text-center">
+					<i class="fas fa-check-circle me-1"></i>Status
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for task in tasks %}
+			<tr>
+				<td class="fw-medium text-muted">{{ task.id }}</td>
+				<td>
+					<a href="{% url 'task' task.id %}" class="text-decoration-none fw-medium">
+						{{ task.title }}
+					</a>
+				</td>
+				<td>
+					<a href="{% url 'project' task.project.id %}" class="text-decoration-none">
+						<span class="badge bg-light text-dark">{{ task.project }}</span>
+					</a>
+				</td>
+				<td class="text-muted">
+					<span title="{{ task.description }}">
+						{{ task.description|truncatewords:8 }}
+					</span>
+				</td>
+				<td>
+					<small class="d-block">
+						<i class="fas fa-calendar me-1 text-muted"></i>
+						{{ task.deadline|date:"M d, Y" }}
+					</small>
+					<small class="text-muted">
+						<i class="fas fa-clock me-1"></i>
+						{{ task.deadline|date:"H:i" }}
+					</small>
+				</td>
+				<td class="text-center">
+					{% if task.is_complete %}
+						<span class="badge bg-success">
+							<i class="fas fa-check me-1"></i>Complete
+						</span>
+					{% else %}
+						<span class="badge bg-warning text-dark">
+							<i class="fas fa-clock me-1"></i>Pending
+						</span>
+					{% endif %}
+				</td>
+			</tr>
+			{% empty %}
+			<tr>
+				<td colspan="6" class="text-center py-5">
+					<div class="text-muted">
+						<i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+						<h6>No tasks found</h6>
+						<p class="small mb-0">Try adjusting your filters or contact your manager.</p>
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<!-- Results summary -->
+{% if tasks %}
+<div class="card-footer bg-light border-0">
+	<div class="row align-items-center">
+		<div class="col">
+			<small class="text-muted">
+				<i class="fas fa-info-circle me-1"></i>
+				Showing {{ tasks.start_index }} to {{ tasks.end_index }} of {{ tasks.paginator.count }} task{{ tasks.paginator.count|pluralize }}
+			</small>
+		</div>
+		<div class="col-auto">
+			{% if tasks.paginator.count > 0 %}
+				<small class="text-muted">
+					{% with completed=tasks|length %}
+					{% with pending=tasks.paginator.count %}
+						<span class="badge bg-success me-1">{{ tasks.paginator.count }} Total</span>
+					{% endwith %}
+					{% endwith %}
+				</small>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endif %}
